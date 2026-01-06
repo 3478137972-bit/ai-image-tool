@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress"
 import { Upload, Sparkles, ImageIcon, Zap, CheckCircle2, X } from "lucide-react"
 import { useLanguage } from "./language-provider"
 import { HistoryDialog } from "./history-dialog"
+import { supabase } from "@/lib/supabase"
 
 export function ImageGenerator() {
   const { t } = useLanguage()
@@ -27,6 +28,28 @@ export function ImageGenerator() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
   const [generatedImages, setGeneratedImages] = useState<string[]>([])
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleLoginRequired = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`
+      }
+    })
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -59,6 +82,11 @@ export function ImageGenerator() {
   }
 
   const handleGenerate = async () => {
+    if (!user) {
+      handleLoginRequired()
+      return
+    }
+
     setIsGenerating(true)
     setProgress(0)
     setGeneratedImages([])
@@ -155,6 +183,11 @@ export function ImageGenerator() {
   }
 
   const handleTextToImageGenerate = async () => {
+    if (!user) {
+      handleLoginRequired()
+      return
+    }
+
     setIsGenerating(true)
     setProgress(0)
     setGeneratedImages([])
