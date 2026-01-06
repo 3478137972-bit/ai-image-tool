@@ -7,8 +7,9 @@ export async function POST(request: NextRequest) {
 
     const uploadFormData = new FormData()
     uploadFormData.append("file", file)
+    uploadFormData.append("uploadPath", "images/user-uploads")
 
-    const uploadResponse = await fetch("https://api.kie.ai/api/v1/files/upload", {
+    const uploadResponse = await fetch("https://kieai.redpandaai.co/api/file-stream-upload", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.KIE_API_KEY}`,
@@ -17,7 +18,12 @@ export async function POST(request: NextRequest) {
     })
 
     const data = await uploadResponse.json()
-    return NextResponse.json({ url: data.data?.url || data.url, success: true })
+    console.log("KIE AI upload response:", data)
+
+    const url = data.data?.downloadUrl || data.data?.url || data.url
+    console.log("Extracted URL:", url)
+
+    return NextResponse.json({ url, success: true })
   } catch (error) {
     console.error("Upload error:", error)
     return NextResponse.json({ error: "Upload failed" }, { status: 500 })

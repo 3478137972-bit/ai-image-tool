@@ -8,6 +8,13 @@ import { useLanguage } from "./language-provider"
 export function HeroSection() {
   const { t } = useLanguage()
 
+  const scrollToGenerator = () => {
+    const element = document.getElementById("generator")
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
   return (
     <section id="home" className="relative overflow-hidden py-20 md:py-32">
       <div className="absolute inset-0 -z-10 gradient-mesh" />
@@ -61,6 +68,7 @@ export function HeroSection() {
           <Button
             size="lg"
             className="gap-2 bg-gradient-to-r from-accent to-accent-secondary hover:shadow-lg hover:shadow-accent/20 transition-all duration-300 group"
+            onClick={scrollToGenerator}
           >
             <Sparkles className="h-4 w-4 group-hover:rotate-12 transition-transform" />
             {t("hero.cta")}

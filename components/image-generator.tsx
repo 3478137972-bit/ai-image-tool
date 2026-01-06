@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
 import { Upload, Sparkles, ImageIcon, Zap, CheckCircle2, X } from "lucide-react"
 import { useLanguage } from "./language-provider"
+import { HistoryDialog } from "./history-dialog"
 
 export function ImageGenerator() {
   const { t } = useLanguage()
@@ -238,13 +239,17 @@ export function ImageGenerator() {
   }
 
   return (
-    <section className="py-16 relative overflow-hidden">
+    <section id="generator" className="py-16 relative overflow-hidden">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-muted/30 via-background to-background" />
       <div className="absolute top-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl -z-10" />
 
       <div className="container mx-auto px-4">
         <Card className="max-w-7xl mx-auto shadow-xl border-accent/10 bg-card/50 backdrop-blur-sm">
           <CardContent className="p-6 md:p-8">
+            {/* History Button */}
+            <div className="flex justify-end mb-4">
+              <HistoryDialog />
+            </div>
             <Tabs defaultValue="image-to-image">
               <TabsList className="grid w-full grid-cols-2 mb-6 bg-muted/50">
                 <TabsTrigger
@@ -746,6 +751,44 @@ export function ImageGenerator() {
                     >
                       <div className="w-7 h-3 border-2 border-current rounded mb-1" />
                       <span className="text-xs">21:9</span>
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <Button
+                      variant={i2iAspectRatio === "5:4" ? "default" : "outline"}
+                      className={
+                        i2iAspectRatio === "5:4"
+                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground flex flex-col items-center py-4 h-auto"
+                          : "border-accent/20 hover:border-accent hover:bg-accent/10 flex flex-col items-center py-4 h-auto bg-transparent"
+                      }
+                      onClick={() => setI2iAspectRatio("5:4")}
+                    >
+                      <div className="w-5 h-4 border-2 border-current rounded mb-1" />
+                      <span className="text-xs">5:4</span>
+                    </Button>
+                    <Button
+                      variant={i2iAspectRatio === "4:5" ? "default" : "outline"}
+                      className={
+                        i2iAspectRatio === "4:5"
+                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground flex flex-col items-center py-4 h-auto"
+                          : "border-accent/20 hover:border-accent hover:bg-accent/10 flex flex-col items-center py-4 h-auto bg-transparent"
+                      }
+                      onClick={() => setI2iAspectRatio("4:5")}
+                    >
+                      <div className="w-4 h-5 border-2 border-current rounded mb-1" />
+                      <span className="text-xs">4:5</span>
+                    </Button>
+                    <Button
+                      variant={i2iAspectRatio === "auto" ? "default" : "outline"}
+                      className={
+                        i2iAspectRatio === "auto"
+                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground flex flex-col items-center py-4 h-auto"
+                          : "border-accent/20 hover:border-accent hover:bg-accent/10 flex flex-col items-center py-4 h-auto bg-transparent"
+                      }
+                      onClick={() => setI2iAspectRatio("auto")}
+                    >
+                      <div className="w-5 h-5 border-2 border-current rounded mb-1" />
+                      <span className="text-xs">auto</span>
                     </Button>
                   </div>
                 </div>
