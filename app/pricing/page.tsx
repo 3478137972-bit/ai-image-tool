@@ -38,10 +38,19 @@ export default function PricingPage() {
         body: JSON.stringify({ type, planId, userId }),
       })
       const data = await res.json()
-      if (data.url) window.location.href = data.url
-      else alert(data.error || '支付失败')
+
+      console.log('Payment response:', data)
+
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        const errorMsg = data.error || '支付失败'
+        console.error('Payment error:', errorMsg)
+        alert(`支付失败: ${errorMsg}`)
+      }
     } catch (error) {
-      alert('支付失败')
+      console.error('Fetch error:', error)
+      alert(`支付失败: ${error}`)
     } finally {
       setLoading(null)
     }
