@@ -11,17 +11,19 @@ export default function PricingPage() {
   const [loading, setLoading] = useState<string | null>(null)
 
   const handleCheckout = async (planId: string, type: 'subscription' | 'payment') => {
-    if (!session?.user?.email) {
+    if (!session) {
       alert('请先登录')
       return
     }
+
+    const userId = session.user?.email || session.user?.name || 'guest'
 
     setLoading(planId)
     try {
       const res = await fetch('/api/payment/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, planId, userId: session.user.email }),
+        body: JSON.stringify({ type, planId, userId }),
       })
       const data = await res.json()
       if (data.url) window.location.href = data.url
