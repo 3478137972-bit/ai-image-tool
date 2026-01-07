@@ -3,8 +3,35 @@
 import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { useState } from "react"
+import { useSession } from "next-auth/react"
 
 export default function PricingPage() {
+  const { data: session } = useSession()
+  const [loading, setLoading] = useState<string | null>(null)
+
+  const handleCheckout = async (planId: string, type: 'subscription' | 'payment') => {
+    if (!session?.user?.email) {
+      alert('请先登录')
+      return
+    }
+
+    setLoading(planId)
+    try {
+      const res = await fetch('/api/payment/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, planId, userId: session.user.email }),
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+      else alert(data.error || '支付失败')
+    } catch (error) {
+      alert('支付失败')
+    } finally {
+      setLoading(null)
+    }
+  }
   const membershipPlans = [
     {
       name: "一级会员",
@@ -57,46 +84,53 @@ export default function PricingPage() {
   ]
 
   return (
-    <div className="min-h-screen py-20">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-purple-50 py-20">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">定价方案</h1>
-          <p className="text-lg text-muted-foreground">选择适合你的方案，开始创作</p>
+          <div className="inline-block bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium mb-6">
+            🎉 限时优惠：年付享8折优惠
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">选择您的完美方案</h1>
+          <p className="text-lg text-gray-600">无限创意从这里开始</p>
         </div>
 
         {/* 会员方案 */}
         <div className="mb-20">
-          <h2 className="text-3xl font-bold text-center mb-12">会员订阅</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">会员订阅</h2>
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {membershipPlans.map((plan) => (
               <Card
                 key={plan.name}
-                className={`p-8 relative ${plan.popular ? "border-2 border-primary shadow-lg" : ""}`}
+                className={`p-8 relative bg-white hover:shadow-xl transition-all ${plan.popular ? "border-3 border-purple-400 shadow-xl scale-105" : "border-2 border-blue-200"}`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                    推荐
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg">
+                    ⭐ 最受欢迎
                   </div>
                 )}
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-4">{plan.nameEn}</p>
-                  <div className="mb-2">
-                    <span className="text-4xl font-bold">¥{plan.price}</span>
-                    <span className="text-muted-foreground">/月</span>
+                  <h3 className="text-2xl font-bold mb-2 text-gray-800">{plan.name}</h3>
+                  <p className="text-sm text-gray-500 mb-4">{plan.nameEn}</p>
+                  <div className="mb-3">
+                    <span className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">¥{plan.price}</span>
+                    <span className="text-gray-500 text-lg">/月</span>
                   </div>
-                  <div className="text-sm text-primary font-medium">{plan.discount} 优惠</div>
+                  <div className="text-sm text-blue-700 font-bold bg-gradient-to-r from-blue-100 to-purple-100 inline-block px-4 py-1.5 rounded-full">{plan.discount} 优惠</div>
                 </div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <Check className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
+                      <Check className="h-5 w-5 text-blue-600 shrink-0 mt-0.5" />
+                      <span className="text-sm text-gray-700">{feature}</span>
                     </li>
                   ))}
                 </ul>
-                <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
-                  立即订阅
+                <Button
+                  className={`w-full font-bold ${plan.popular ? "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg" : "bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 border-2 border-blue-400 hover:from-blue-100 hover:to-purple-100"}`}
+                  onClick={() => handleCheckout(plan.nameEn, 'subscription')}
+                  disabled={loading === plan.nameEn}
+                >
+                  {loading === plan.nameEn ? '处理中...' : '立即订阅'}
                 </Button>
               </Card>
             ))}
@@ -105,50 +139,55 @@ export default function PricingPage() {
 
         {/* 积分包 */}
         <div>
-          <h2 className="text-3xl font-bold text-center mb-12">积分包</h2>
+          <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">积分包</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-6 max-w-6xl mx-auto">
             {creditPacks.map((pack) => (
               <Card
                 key={pack.credits}
-                className={`p-6 text-center ${pack.popular ? "border-2 border-primary" : ""}`}
+                className={`p-6 text-center bg-white hover:shadow-lg transition-all ${pack.popular ? "border-3 border-purple-400 shadow-md" : "border-2 border-blue-200"}`}
               >
                 {pack.popular && (
-                  <div className="text-xs text-primary font-medium mb-2">最优惠</div>
+                  <div className="text-xs text-blue-700 font-bold mb-2 bg-gradient-to-r from-blue-100 to-purple-100 inline-block px-3 py-1 rounded-full">最优惠</div>
                 )}
-                <div className="text-3xl font-bold mb-2">{pack.credits}</div>
-                <div className="text-sm text-muted-foreground mb-4">积分</div>
-                <div className="text-2xl font-bold mb-4">¥{pack.price}</div>
-                <Button className="w-full" variant="outline" size="sm">
-                  购买
+                <div className="text-3xl font-bold mb-2 text-gray-800">{pack.credits}</div>
+                <div className="text-sm text-gray-500 mb-4">积分</div>
+                <div className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">¥{pack.price}</div>
+                <Button
+                  className="w-full bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 border-2 border-blue-400 hover:from-blue-100 hover:to-purple-100 font-bold"
+                  size="sm"
+                  onClick={() => handleCheckout(`credits-${pack.credits}`, 'payment')}
+                  disabled={loading === `credits-${pack.credits}`}
+                >
+                  {loading === `credits-${pack.credits}` ? '处理中...' : '购买'}
                 </Button>
               </Card>
             ))}
           </div>
-          <p className="text-center text-sm text-muted-foreground mt-8">
+          <p className="text-center text-sm text-gray-600 mt-8">
             积分永久有效 · 可随时使用
           </p>
         </div>
 
         {/* 积分消耗说明 */}
         <div className="mt-20 max-w-3xl mx-auto">
-          <h3 className="text-2xl font-bold text-center mb-8">积分消耗说明</h3>
+          <h3 className="text-2xl font-bold text-center mb-8 text-gray-800">积分消耗说明</h3>
           <div className="grid md:grid-cols-3 gap-6">
-            <Card className="p-6 text-center">
-              <div className="font-bold mb-2">Nano Banana</div>
-              <div className="text-3xl font-bold text-primary mb-2">3</div>
-              <div className="text-sm text-muted-foreground">积分/张</div>
+            <Card className="p-6 text-center bg-white border-2 border-blue-200 hover:shadow-lg transition-shadow">
+              <div className="font-bold mb-2 text-gray-800">Nano Banana</div>
+              <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">3</div>
+              <div className="text-sm text-gray-500">积分/张</div>
             </Card>
-            <Card className="p-6 text-center">
-              <div className="font-bold mb-2">Nano Banana Pro</div>
-              <div className="text-sm text-muted-foreground mb-2">1k / 2k</div>
-              <div className="text-3xl font-bold text-primary mb-2">6</div>
-              <div className="text-sm text-muted-foreground">积分/张</div>
+            <Card className="p-6 text-center bg-white border-2 border-blue-200 hover:shadow-lg transition-shadow">
+              <div className="font-bold mb-2 text-gray-800">Nano Banana Pro</div>
+              <div className="text-sm text-gray-500 mb-2">1k / 2k</div>
+              <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">6</div>
+              <div className="text-sm text-gray-500">积分/张</div>
             </Card>
-            <Card className="p-6 text-center">
-              <div className="font-bold mb-2">Nano Banana Pro</div>
-              <div className="text-sm text-muted-foreground mb-2">4k</div>
-              <div className="text-3xl font-bold text-primary mb-2">12</div>
-              <div className="text-sm text-muted-foreground">积分/张</div>
+            <Card className="p-6 text-center bg-white border-2 border-blue-200 hover:shadow-lg transition-shadow">
+              <div className="font-bold mb-2 text-gray-800">Nano Banana Pro</div>
+              <div className="text-sm text-gray-500 mb-2">4k</div>
+              <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">12</div>
+              <div className="text-sm text-gray-500">积分/张</div>
             </Card>
           </div>
         </div>
