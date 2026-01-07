@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const PLANS = {
-  'Basic': { price: 2900, credits: 380, name: '一级会员' },
-  'Standard': { price: 4900, credits: 681, name: '二级会员' },
-  'Pro': { price: 7900, credits: 1197, name: '三级会员' },
-  'credits-100': { price: 1100, credits: 100, name: '100积分' },
-  'credits-300': { price: 3100, credits: 300, name: '300积分' },
-  'credits-500': { price: 5000, credits: 500, name: '500积分' },
-  'credits-1000': { price: 9500, credits: 1000, name: '1000积分' },
-  'credits-3000': { price: 24000, credits: 3000, name: '3000积分' },
+  'Basic': { price: 420, credits: 380, name: '一级会员' },
+  'Standard': { price: 710, credits: 681, name: '二级会员' },
+  'Pro': { price: 1140, credits: 1197, name: '三级会员' },
+  'credits-100': { price: 160, credits: 100, name: '100积分' },
+  'credits-300': { price: 450, credits: 300, name: '300积分' },
+  'credits-500': { price: 720, credits: 500, name: '500积分' },
+  'credits-1000': { price: 1370, credits: 1000, name: '1000积分' },
+  'credits-3000': { price: 3460, credits: 3000, name: '3000积分' },
 }
 
 export async function POST(req: NextRequest) {
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
         customer_email: userId,
         line_items: [{
           price_data: {
-            currency: 'cny',
+            currency: 'usd',
             product_data: {
               name: plan.name,
             },
