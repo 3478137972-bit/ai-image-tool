@@ -7,6 +7,7 @@ import { ShowcaseSection } from "@/components/showcase-section"
 import { TestimonialsSection } from "@/components/testimonials-section"
 import { FAQSection } from "@/components/faq-section"
 import { CTASection } from "@/components/cta-section"
+import { Footer } from "@/components/footer"
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <TestimonialsSection />
       <FAQSection />
       <CTASection />
+      <Footer />
     </main>
   )
 }
