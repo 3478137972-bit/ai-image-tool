@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Sparkles, Menu } from "lucide-react"
 import { useLanguage } from "./language-provider"
@@ -65,6 +66,12 @@ export function Header() {
           >
             {t("nav.features")}
           </button>
+          <Link
+            href="/pricing"
+            className="text-sm font-medium hover:text-accent transition-colors"
+          >
+            {t("nav.pricing")}
+          </Link>
           <button
             onClick={() => scrollToSection("showcase")}
             className="text-sm font-medium hover:text-accent transition-colors"
@@ -129,6 +136,12 @@ export function Header() {
                 >
                   {t("nav.features")}
                 </button>
+                <Link
+                  href="/pricing"
+                  className="text-lg font-medium hover:text-accent transition-colors text-left"
+                >
+                  {t("nav.pricing")}
+                </Link>
                 <button
                   onClick={() => scrollToSection("showcase")}
                   className="text-lg font-medium hover:text-accent transition-colors text-left"
