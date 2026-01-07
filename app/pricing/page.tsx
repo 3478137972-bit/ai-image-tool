@@ -3,20 +3,32 @@
 import { Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { useState } from "react"
-import { useSession } from "next-auth/react"
+import { useState, useEffect } from "react"
+import { supabase } from "@/lib/supabase"
 
 export default function PricingPage() {
-  const { data: session } = useSession()
+  const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState<string | null>(null)
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
   const handleCheckout = async (planId: string, type: 'subscription' | 'payment') => {
-    if (!session) {
+    if (!user) {
       alert('请先登录')
       return
     }
 
-    const userId = session.user?.email || session.user?.name || 'guest'
+    const userId = user.email || user.id || 'guest'
 
     setLoading(planId)
     try {
