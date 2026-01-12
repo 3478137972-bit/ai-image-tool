@@ -20,18 +20,18 @@ export function HistoryDialog() {
 
   const downloadImage = async (url: string, index: number) => {
     try {
-      // 直接使用 a 标签下载，添加 download 属性
+      const response = await fetch(url, { mode: 'cors' })
+      const blob = await response.blob()
+      const blobUrl = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
-      link.href = url
+      link.href = blobUrl
       link.download = `image-${Date.now()}-${index}.png`
-      link.target = '_blank'
-      link.rel = 'noopener noreferrer'
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+      window.URL.revokeObjectURL(blobUrl)
     } catch (error) {
       console.error('下载失败:', error)
-      // 如果下载失败，在新标签页打开图片
       window.open(url, '_blank')
     }
   }
