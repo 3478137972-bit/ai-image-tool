@@ -344,7 +344,7 @@ export function ImageGenerator() {
                           Nano Banana Pro
                         </div>
                       </SelectItem>
-                      <SelectItem value="nano-banana">Nano Banana</SelectItem>
+                      <SelectItem value="google/nano-banana">Nano Banana</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -408,7 +408,7 @@ export function ImageGenerator() {
 
                 {/* Aspect Ratio / Image Size */}
                 <div className="space-y-2">
-                  <Label>{t2iModel === "nano-banana" ? "Image Size" : t("gen.aspectRatio")}</Label>
+                  <Label>{t2iModel === "google/nano-banana" ? "Image Size" : t("gen.aspectRatio")}</Label>
                   <div className="grid grid-cols-4 gap-3">
                     <Button
                       variant={t2iAspectRatio === "auto" ? "default" : "outline"}
@@ -579,7 +579,7 @@ export function ImageGenerator() {
                           Nano Banana Pro
                         </div>
                       </SelectItem>
-                      <SelectItem value="nano-banana-edit">Nano Banana Edit</SelectItem>
+                      <SelectItem value="google/nano-banana-edit">Nano Banana Edit</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -709,7 +709,7 @@ export function ImageGenerator() {
 
                 {/* Aspect Ratio / Image Size */}
                 <div className="space-y-2">
-                  <Label>{i2iModel === "nano-banana-edit" ? "Image Size" : t("gen.aspectRatio")}</Label>
+                  <Label>{i2iModel === "google/nano-banana-edit" ? "Image Size" : t("gen.aspectRatio")}</Label>
                   <div className="grid grid-cols-4 gap-3">
                     <Button
                       variant={i2iAspectRatio === "1:1" ? "default" : "outline"}

@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     let creditCost = 3
     if (model === "nano-banana-pro") {
       creditCost = resolution === "4K" ? 12 : 6
-    } else if (model === "nano-banana" || model === "nano-banana-edit") {
+    } else if (model === "google/nano-banana" || model === "google/nano-banana-edit") {
       creditCost = 1
     }
 
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     console.log("Generating with:", { prompt, imageUrls, aspectRatio, resolution, model })
 
     // 根据模型类型构建不同的请求体
-    const isNanoBanana = model === "nano-banana" || model === "nano-banana-edit"
+    const isNanoBanana = model === "google/nano-banana" || model === "google/nano-banana-edit"
     const requestBody: any = {
       model: model,
       input: {
