@@ -11,6 +11,17 @@ const PLANS = {
   'credits-3000': { price: 3460, credits: 3000, name: '3000积分' },
 }
 
+const PRODUCT_IDS = {
+  'Basic': 'prod_5zY6k18pp32ry5DSfSfsfT',
+  'Standard': 'prod_4iRgcEm39caf3jvubd8bR6',
+  'Pro': 'prod_7O1Puz3IAf4tK0A6GlLtJg',
+  'credits-100': 'prod_7crRfuLb0zchETDvLdCaWp',
+  'credits-300': 'prod_6t2EwoXzQhgLJdDpED3VBS',
+  'credits-500': 'prod_1fIoubCxCQro1F7sdFraZI',
+  'credits-1000': 'prod_6V3Tv6i778fCiyhHqFQZlM',
+  'credits-3000': 'prod_1WHEODEOAZGC9c6AaEA61x',
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { type, planId, userId } = await req.json()
@@ -27,7 +38,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        product_id: 'prod_6xFBPWsE0zQASZYaajXP7N',
+        product_id: PRODUCT_IDS[planId as keyof typeof PRODUCT_IDS],
         request_id: `req_${Date.now()}`,
         units: 1,
         customer: {
