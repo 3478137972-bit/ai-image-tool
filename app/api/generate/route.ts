@@ -21,6 +21,8 @@ export async function POST(request: NextRequest) {
     let creditCost = 3
     if (model === "nano-banana-pro") {
       creditCost = resolution === "4K" ? 12 : 6
+    } else if (model === "nano-banana" || model === "nano-banana-edit") {
+      creditCost = 1
     }
 
     const { data: userCredits } = await supabase
@@ -41,16 +43,29 @@ export async function POST(request: NextRequest) {
 
     console.log("Generating with:", { prompt, imageUrls, aspectRatio, resolution, model })
 
-    const requestBody = {
+    // 根据模型类型构建不同的请求体
+    const isNanoBanana = model === "nano-banana" || model === "nano-banana-edit"
+    const requestBody: any = {
       model: model,
       input: {
         prompt,
-        image_input: imageUrls,
-        aspect_ratio: aspectRatio,
-        resolution: resolution,
         output_format: "png",
       },
     }
+
+    if (isNanoBanana) {
+      // nano-banana 使用 image_size 而不是 aspect_ratio 和 resolution
+      requestBody.input.image_size = aspectRatio
+      if (imageUrls && imageUrls.length > 0) {
+        requestBody.input.image_urls = imageUrls
+      }
+    } else {
+      // nano-banana-pro 使用 aspect_ratio 和 resolution
+      requestBody.input.image_input = imageUrls
+      requestBody.input.aspect_ratio = aspectRatio
+      requestBody.input.resolution = resolution
+    }
+
     console.log("Request body:", JSON.stringify(requestBody, null, 2))
 
     const response = await fetch("https://api.kie.ai/api/v1/jobs/createTask", {

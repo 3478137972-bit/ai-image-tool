@@ -364,49 +364,51 @@ export function ImageGenerator() {
                   <p className="text-xs text-muted-foreground text-right">{textPrompt.length}/5000</p>
                 </div>
 
-                {/* Resolution */}
-                <div className="space-y-2">
-                  <Label>{t("gen.resolution")}</Label>
-                  <div className="grid grid-cols-3 gap-3">
-                    <Button
-                      variant={t2iResolution === "1K" ? "default" : "outline"}
-                      className={
-                        t2iResolution === "1K"
-                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
-                          : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
-                      }
-                      onClick={() => setT2iResolution("1K")}
-                    >
-                      1K
-                    </Button>
-                    <Button
-                      variant={t2iResolution === "2K" ? "default" : "outline"}
-                      className={
-                        t2iResolution === "2K"
-                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
-                          : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
-                      }
-                      onClick={() => setT2iResolution("2K")}
-                    >
-                      2K
-                    </Button>
-                    <Button
-                      variant={t2iResolution === "4K" ? "default" : "outline"}
-                      className={
-                        t2iResolution === "4K"
-                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
-                          : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
-                      }
-                      onClick={() => setT2iResolution("4K")}
-                    >
-                      4K
-                    </Button>
+                {/* Resolution - only show for nano-banana-pro */}
+                {t2iModel === "nano-banana-pro" && (
+                  <div className="space-y-2">
+                    <Label>{t("gen.resolution")}</Label>
+                    <div className="grid grid-cols-3 gap-3">
+                      <Button
+                        variant={t2iResolution === "1K" ? "default" : "outline"}
+                        className={
+                          t2iResolution === "1K"
+                            ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
+                            : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
+                        }
+                        onClick={() => setT2iResolution("1K")}
+                      >
+                        1K
+                      </Button>
+                      <Button
+                        variant={t2iResolution === "2K" ? "default" : "outline"}
+                        className={
+                          t2iResolution === "2K"
+                            ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
+                            : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
+                        }
+                        onClick={() => setT2iResolution("2K")}
+                      >
+                        2K
+                      </Button>
+                      <Button
+                        variant={t2iResolution === "4K" ? "default" : "outline"}
+                        className={
+                          t2iResolution === "4K"
+                            ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
+                            : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
+                        }
+                        onClick={() => setT2iResolution("4K")}
+                      >
+                        4K
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* Aspect Ratio */}
+                {/* Aspect Ratio / Image Size */}
                 <div className="space-y-2">
-                  <Label>{t("gen.aspectRatio")}</Label>
+                  <Label>{t2iModel === "nano-banana" ? "Image Size" : t("gen.aspectRatio")}</Label>
                   <div className="grid grid-cols-4 gap-3">
                     <Button
                       variant={t2iAspectRatio === "auto" ? "default" : "outline"}
@@ -577,7 +579,7 @@ export function ImageGenerator() {
                           Nano Banana Pro
                         </div>
                       </SelectItem>
-                      <SelectItem value="nano-banana">Nano Banana</SelectItem>
+                      <SelectItem value="nano-banana-edit">Nano Banana Edit</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -663,49 +665,51 @@ export function ImageGenerator() {
                   <p className="text-xs text-muted-foreground text-right">{prompt.length}/5000</p>
                 </div>
 
-                {/* Resolution */}
-                <div className="space-y-2">
-                  <Label>{t("gen.resolution")}</Label>
-                  <div className="grid grid-cols-3 gap-3">
-                    <Button
-                      variant={i2iResolution === "1K" ? "default" : "outline"}
-                      className={
-                        i2iResolution === "1K"
-                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
-                          : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
-                      }
-                      onClick={() => setI2iResolution("1K")}
-                    >
-                      1K
-                    </Button>
-                    <Button
-                      variant={i2iResolution === "2K" ? "default" : "outline"}
-                      className={
-                        i2iResolution === "2K"
-                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
-                          : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
-                      }
-                      onClick={() => setI2iResolution("2K")}
-                    >
-                      2K
-                    </Button>
-                    <Button
-                      variant={i2iResolution === "4K" ? "default" : "outline"}
-                      className={
-                        i2iResolution === "4K"
-                          ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
-                          : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
-                      }
-                      onClick={() => setI2iResolution("4K")}
-                    >
-                      4K
-                    </Button>
+                {/* Resolution - only show for nano-banana-pro */}
+                {i2iModel === "nano-banana-pro" && (
+                  <div className="space-y-2">
+                    <Label>{t("gen.resolution")}</Label>
+                    <div className="grid grid-cols-3 gap-3">
+                      <Button
+                        variant={i2iResolution === "1K" ? "default" : "outline"}
+                        className={
+                          i2iResolution === "1K"
+                            ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
+                            : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
+                        }
+                        onClick={() => setI2iResolution("1K")}
+                      >
+                        1K
+                      </Button>
+                      <Button
+                        variant={i2iResolution === "2K" ? "default" : "outline"}
+                        className={
+                          i2iResolution === "2K"
+                            ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
+                            : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
+                        }
+                        onClick={() => setI2iResolution("2K")}
+                      >
+                        2K
+                      </Button>
+                      <Button
+                        variant={i2iResolution === "4K" ? "default" : "outline"}
+                        className={
+                          i2iResolution === "4K"
+                            ? "bg-gradient-to-r from-accent to-accent-secondary text-accent-foreground"
+                            : "border-accent/20 hover:border-accent hover:bg-accent/10 bg-transparent"
+                        }
+                        onClick={() => setI2iResolution("4K")}
+                      >
+                        4K
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* Aspect Ratio */}
+                {/* Aspect Ratio / Image Size */}
                 <div className="space-y-2">
-                  <Label>{t("gen.aspectRatio")}</Label>
+                  <Label>{i2iModel === "nano-banana-edit" ? "Image Size" : t("gen.aspectRatio")}</Label>
                   <div className="grid grid-cols-4 gap-3">
                     <Button
                       variant={i2iAspectRatio === "1:1" ? "default" : "outline"}
