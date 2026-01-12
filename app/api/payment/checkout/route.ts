@@ -48,12 +48,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Creem API 错误: ${errorMessage}` }, { status: response.status })
     }
 
-    if (!data.url) {
+    // Creem 可能返回不同的字段名，尝试多个可能的字段
+    const checkoutUrl = data.url || data.checkout_url || data.payment_url || data.link
+
+    if (!checkoutUrl) {
       console.error('No URL in response:', data)
-      return NextResponse.json({ error: '未收到支付链接' }, { status: 500 })
+      return NextResponse.json({
+        error: '未收到支付链接',
+        debug: data
+      }, { status: 500 })
     }
 
-    return NextResponse.json({ url: data.url })
+    return NextResponse.json({ url: checkoutUrl })
   } catch (error: any) {
     console.error('Payment error:', error)
     return NextResponse.json({ error: error.message }, { status: 500 })
