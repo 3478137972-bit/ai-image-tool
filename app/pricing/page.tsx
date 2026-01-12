@@ -73,10 +73,10 @@ export default function PricingPage() {
       name: "BASIC",
       nameZh: "基础版",
       subtitle: "适合初次探索 AI 创作",
-      price: 29,
-      originalPrice: 39,
+      price: 4.99,
+      originalPrice: 5.99,
       monthlyCredits: 352,
-      extraCredits: "¥0.0825/积分",
+      extraCredits: "$0.012/积分",
       features: [
         "每月积分",
         "额外充值",
@@ -88,10 +88,10 @@ export default function PricingPage() {
       name: "PRO",
       nameZh: "标准版",
       subtitle: "适合高频创作与持续产出",
-      price: 49,
-      originalPrice: 69,
+      price: 6.99,
+      originalPrice: 9.99,
       monthlyCredits: 681,
-      extraCredits: "¥0.072/积分",
+      extraCredits: "$0.010/积分",
       popular: true,
       bonus: "7折优惠",
       features: [
@@ -105,10 +105,10 @@ export default function PricingPage() {
       name: "ULTIMATE",
       nameZh: "专业版",
       subtitle: "适合大批量稳定产出与交付",
-      price: 79,
-      originalPrice: 119,
+      price: 10.99,
+      originalPrice: 16.99,
       monthlyCredits: 1197,
-      extraCredits: "¥0.066/积分",
+      extraCredits: "$0.009/积分",
       bonus: "65折优惠",
       features: [
         "每月积分",
@@ -120,11 +120,11 @@ export default function PricingPage() {
   ]
 
   const creditPacks = [
-    { credits: 100, bonus: 0, images: "16-33", price: 11.00, discount: "原价" },
-    { credits: 300, bonus: 0, images: "50-100", price: 31.00, discount: "94折" },
-    { credits: 500, bonus: 0, images: "83-166", price: 50.00, discount: "91折" },
-    { credits: 1000, bonus: 0, images: "166-333", price: 95.00, discount: "86折" },
-    { credits: 3000, bonus: 0, images: "500-1000", price: 240.00, discount: "73折" },
+    { credits: 100, bonus: 0, images: "16-33", price: 1.99, discount: "原价" },
+    { credits: 300, bonus: 0, images: "50-100", price: 4.99, discount: "94折" },
+    { credits: 500, bonus: 0, images: "83-166", price: 6.99, discount: "91折" },
+    { credits: 1000, bonus: 0, images: "166-333", price: 13.99, discount: "86折" },
+    { credits: 3000, bonus: 0, images: "500-1000", price: 33.99, discount: "73折" },
   ]
 
   return (
@@ -161,12 +161,12 @@ export default function PricingPage() {
                 <p className="text-sm text-gray-600 mb-4">{plan.subtitle}</p>
 
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-gray-400 line-through text-lg">¥{plan.originalPrice}</span>
-                  <span className="text-5xl font-bold text-gray-900">¥{plan.price}</span>
+                  <span className="text-gray-400 line-through text-lg">${plan.originalPrice}</span>
+                  <span className="text-5xl font-bold text-gray-900">${plan.price}</span>
                   <span className="text-gray-600">{t('pricing.perMonth')}</span>
                 </div>
                 <p className="text-sm text-gray-500">
-                  {t('pricing.firstMonth')} ¥{plan.originalPrice}{t('pricing.perMonth')}
+                  {t('pricing.firstMonth')} ${plan.originalPrice}{t('pricing.perMonth')}
                 </p>
               </div>
 
@@ -229,7 +229,7 @@ export default function PricingPage() {
                 <p className="text-sm text-gray-600 mb-4">{t('pricing.about')}{pack.images} {t('pricing.images')}</p>
 
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-5xl font-bold text-gray-900">¥{pack.price.toFixed(2)}</span>
+                  <span className="text-5xl font-bold text-gray-900">${pack.price.toFixed(2)}</span>
                 </div>
                 <p className="text-sm text-gray-500">{t('pricing.creditsValid')}</p>
               </div>
