@@ -59,7 +59,7 @@ export default function PricingPage() {
     {
       name: "一级会员",
       nameEn: "Basic",
-      price: 29,
+      price: 4.20,
       credits: 380,
       discount: "75折",
       features: [
@@ -72,7 +72,7 @@ export default function PricingPage() {
     {
       name: "二级会员",
       nameEn: "Standard",
-      price: 49,
+      price: 7.10,
       credits: 681,
       discount: "7折",
       popular: true,
@@ -86,7 +86,7 @@ export default function PricingPage() {
     {
       name: "三级会员",
       nameEn: "Pro",
-      price: 79,
+      price: 11.40,
       credits: 1197,
       discount: "65折",
       features: [
@@ -99,11 +99,11 @@ export default function PricingPage() {
   ]
 
   const creditPacks = [
-    { credits: 100, price: 11 },
-    { credits: 300, price: 31 },
-    { credits: 500, price: 50 },
-    { credits: 1000, price: 95 },
-    { credits: 3000, price: 240, popular: true },
+    { credits: 100, price: 1.60 },
+    { credits: 300, price: 4.50 },
+    { credits: 500, price: 7.20 },
+    { credits: 1000, price: 13.70 },
+    { credits: 3000, price: 34.60, popular: true },
   ]
 
   return (
@@ -135,7 +135,7 @@ export default function PricingPage() {
                   <h3 className="text-2xl font-bold mb-2 text-gray-800">{plan.name}</h3>
                   <p className="text-sm text-gray-500 mb-4">{plan.nameEn}</p>
                   <div className="mb-3">
-                    <span className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">¥{plan.price}</span>
+                    <span className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">${plan.price}</span>
                     <span className="text-gray-500 text-lg">/月</span>
                   </div>
                   <div className="text-sm text-blue-700 font-bold bg-gradient-to-r from-blue-100 to-purple-100 inline-block px-4 py-1.5 rounded-full">{plan.discount} 优惠</div>
@@ -174,7 +174,7 @@ export default function PricingPage() {
                 )}
                 <div className="text-3xl font-bold mb-2 text-gray-800">{pack.credits}</div>
                 <div className="text-sm text-gray-500 mb-4">积分</div>
-                <div className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">¥{pack.price}</div>
+                <div className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">${pack.price}</div>
                 <Button
                   className="w-full bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 border-2 border-blue-400 hover:from-blue-100 hover:to-purple-100 font-bold"
                   size="sm"
