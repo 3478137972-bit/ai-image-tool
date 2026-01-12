@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { History, X } from "lucide-react"
+import { History, X, Download } from "lucide-react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 export function HistoryDialog() {
@@ -16,6 +16,23 @@ export function HistoryDialog() {
   const clearHistory = () => {
     localStorage.removeItem('imageHistory')
     setHistory([])
+  }
+
+  const downloadImage = async (url: string, index: number) => {
+    try {
+      const response = await fetch(url)
+      const blob = await response.blob()
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.download = `image-${Date.now()}-${index}.png`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(downloadUrl)
+    } catch (error) {
+      console.error('下载失败:', error)
+    }
   }
 
   return (
@@ -51,7 +68,17 @@ export function HistoryDialog() {
                   <p className="text-sm mb-3">{item.prompt}</p>
                   <div className="grid grid-cols-2 gap-2">
                     {item.urls.map((url, i) => (
-                      <img key={i} src={url} alt="" className="w-full rounded" />
+                      <div key={i} className="relative group">
+                        <img src={url} alt="" className="w-full rounded" />
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => downloadImage(url, i)}
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </div>
                     ))}
                   </div>
                 </div>
