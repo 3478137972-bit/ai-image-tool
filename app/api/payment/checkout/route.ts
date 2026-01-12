@@ -27,31 +27,14 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/pricing`,
-        mode: type === 'subscription' ? 'subscription' : 'payment',
-        customer_email: userId,
-        line_items: [{
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: plan.name,
-            },
-            unit_amount: plan.price,
-            ...(type === 'subscription' && {
-              recurring: {
-                interval: 'month',
-              },
-            }),
-          },
-          quantity: 1,
-        }],
-        metadata: {
-          userId,
-          planId,
-          type,
-          credits: plan.credits,
+        product_id: 'prod_6xFBPWsE0zQASZYaajXP7N',
+        request_id: `req_${Date.now()}`,
+        units: 1,
+        customer: {
+          email: userId,
         },
+        success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/payment/success`,
+        cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/pricing`,
       }),
     })
 
