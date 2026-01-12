@@ -52,9 +52,18 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json()
 
+    console.log('Creem API response status:', response.status)
+    console.log('Creem API response data:', JSON.stringify(data, null, 2))
+
     if (!response.ok) {
       console.error('Creem API error:', data)
-      throw new Error(data.message || 'Payment failed')
+      const errorMessage = data.error?.message || data.message || JSON.stringify(data)
+      return NextResponse.json({ error: `Creem API 错误: ${errorMessage}` }, { status: response.status })
+    }
+
+    if (!data.url) {
+      console.error('No URL in response:', data)
+      return NextResponse.json({ error: '未收到支付链接' }, { status: 500 })
     }
 
     return NextResponse.json({ url: data.url })
