@@ -3,6 +3,7 @@
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { useLanguage } from "@/components/language-provider"
 
 interface PaymentModalProps {
   isOpen: boolean
@@ -23,6 +24,8 @@ export default function PaymentModal({
   onConfirm,
   loading,
 }: PaymentModalProps) {
+  const { t } = useLanguage()
+
   if (!isOpen) return null
 
   return (
@@ -36,21 +39,21 @@ export default function PaymentModal({
         </button>
 
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Confirm Payment</h2>
-          <p className="text-gray-600">Review your purchase details</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('payment.confirmTitle')}</h2>
+          <p className="text-gray-600">{t('payment.reviewDetails')}</p>
         </div>
 
         <div className="space-y-4 mb-6">
           <div className="flex justify-between py-3 border-b">
-            <span className="text-gray-700">Plan</span>
+            <span className="text-gray-700">{t('payment.plan')}</span>
             <span className="font-bold text-gray-900">{planName}</span>
           </div>
           <div className="flex justify-between py-3 border-b">
-            <span className="text-gray-700">Credits</span>
+            <span className="text-gray-700">{t('payment.credits')}</span>
             <span className="font-bold text-gray-900">{credits.toLocaleString()}</span>
           </div>
           <div className="flex justify-between py-3">
-            <span className="text-gray-700 text-lg">Total</span>
+            <span className="text-gray-700 text-lg">{t('payment.total')}</span>
             <span className="font-bold text-gray-900 text-2xl">¥{price}</span>
           </div>
         </div>
@@ -61,7 +64,7 @@ export default function PaymentModal({
             disabled={loading}
             className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-3 rounded-xl font-semibold"
           >
-            {loading ? "Processing..." : "Confirm Payment"}
+            {loading ? t('payment.processing') : t('payment.confirm')}
           </Button>
           <Button
             onClick={onClose}
@@ -69,7 +72,7 @@ export default function PaymentModal({
             variant="outline"
             className="w-full py-3 rounded-xl"
           >
-            Cancel
+            {t('payment.cancel')}
           </Button>
         </div>
       </Card>

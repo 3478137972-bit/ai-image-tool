@@ -148,6 +148,16 @@ const translations = {
 
     // Credit Balance
     "credit.balance": "Credits",
+
+    // Payment Modal
+    "payment.confirmTitle": "Confirm Payment",
+    "payment.reviewDetails": "Review your purchase details",
+    "payment.plan": "Plan",
+    "payment.credits": "Credits",
+    "payment.total": "Total",
+    "payment.confirm": "Confirm Payment",
+    "payment.cancel": "Cancel",
+    "payment.processing": "Processing...",
   },
   zh: {
     // Header
@@ -276,6 +286,16 @@ const translations = {
 
     // Credit Balance
     "credit.balance": "积分",
+
+    // Payment Modal
+    "payment.confirmTitle": "确认支付",
+    "payment.reviewDetails": "查看您的购买详情",
+    "payment.plan": "套餐",
+    "payment.credits": "积分",
+    "payment.total": "总计",
+    "payment.confirm": "确认支付",
+    "payment.cancel": "取消",
+    "payment.processing": "处理中...",
   },
 }
 
