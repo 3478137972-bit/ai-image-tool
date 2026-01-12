@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '无效的方案' }, { status: 400 })
     }
 
-    const response = await fetch('https://test-api.creem.io/v1/checkout-sessions', {
+    const response = await fetch('https://test-api.creem.io/v1/checkouts', {
       method: 'POST',
       headers: {
         'x-api-key': process.env.CREEM_API_KEY || '',
