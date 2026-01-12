@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        testMode: true,
         success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/pricing`,
         mode: type === 'subscription' ? 'subscription' : 'payment',
