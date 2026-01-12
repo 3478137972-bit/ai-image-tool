@@ -38,6 +38,11 @@ export async function POST(req: NextRequest) {
               name: plan.name,
             },
             unit_amount: plan.price,
+            ...(type === 'subscription' && {
+              recurring: {
+                interval: 'month',
+              },
+            }),
           },
           quantity: 1,
         }],
