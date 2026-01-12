@@ -20,16 +20,12 @@ export function HistoryDialog() {
 
   const downloadImage = async (url: string, index: number) => {
     try {
-      const response = await fetch(url, { mode: 'cors' })
-      const blob = await response.blob()
-      const blobUrl = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
-      link.href = blobUrl
+      link.href = `/api/download?url=${encodeURIComponent(url)}`
       link.download = `image-${Date.now()}-${index}.png`
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
-      window.URL.revokeObjectURL(blobUrl)
     } catch (error) {
       console.error('下载失败:', error)
       window.open(url, '_blank')
