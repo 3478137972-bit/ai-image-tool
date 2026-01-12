@@ -74,8 +74,9 @@ export async function POST(request: NextRequest) {
     if (data.code !== 200 || !data.data?.taskId) {
       console.error("KIEAI API 返回格式错误:", data)
       return NextResponse.json({
-        error: data.message || "KIEAI API 返回格式错误",
-        details: data
+        error: `KIEAI API 错误: ${data.message || '未知错误'}`,
+        code: data.code,
+        apiResponse: JSON.stringify(data)
       }, { status: 500 })
     }
 
