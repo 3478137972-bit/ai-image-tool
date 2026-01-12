@@ -133,6 +133,10 @@ export function ImageGenerator() {
       console.log("Create task result:", result)
 
       if (result.error) {
+        // 如果有 apiResponse，显示完整的 API 响应
+        if (result.apiResponse) {
+          throw new Error(`${result.error}\n\nAPI 响应: ${result.apiResponse}`)
+        }
         throw new Error(result.error)
       }
 
@@ -228,6 +232,10 @@ export function ImageGenerator() {
       console.log("Create task result:", result)
 
       if (result.error) {
+        // 如果有 apiResponse，显示完整的 API 响应
+        if (result.apiResponse) {
+          throw new Error(`${result.error}\n\nAPI 响应: ${result.apiResponse}`)
+        }
         throw new Error(result.error)
       }
 
