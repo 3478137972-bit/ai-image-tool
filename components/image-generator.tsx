@@ -23,8 +23,10 @@ export function ImageGenerator() {
   const [isDragging, setIsDragging] = useState(false)
   const [i2iResolution, setI2iResolution] = useState("2K")
   const [i2iAspectRatio, setI2iAspectRatio] = useState("1:1")
+  const [i2iModel, setI2iModel] = useState("nano-banana-pro")
   const [t2iResolution, setT2iResolution] = useState("2K")
   const [t2iAspectRatio, setT2iAspectRatio] = useState("1:1")
+  const [t2iModel, setT2iModel] = useState("nano-banana-pro")
   const [isGenerating, setIsGenerating] = useState(false)
   const [progress, setProgress] = useState(0)
   const [generatedImages, setGeneratedImages] = useState<string[]>([])
@@ -122,14 +124,20 @@ export function ImageGenerator() {
           imageUrls,
           aspectRatio: i2iAspectRatio,
           resolution: i2iResolution,
+          model: i2iModel,
+          userId: user.id,
         }),
       })
 
       const result = await response.json()
       console.log("Create task result:", result)
 
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
       if (!result.data?.taskId && !result.data?.recordId) {
-        throw new Error("未获取到任务ID")
+        throw new Error(`未获取到任务ID。API返回: ${JSON.stringify(result)}`)
       }
 
       const taskId = result.data.taskId || result.data.recordId
@@ -211,14 +219,20 @@ export function ImageGenerator() {
           imageUrls: [],
           aspectRatio: t2iAspectRatio,
           resolution: t2iResolution,
+          model: t2iModel,
+          userId: user.id,
         }),
       })
 
       const result = await response.json()
       console.log("Create task result:", result)
 
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
       if (!result.data?.taskId && !result.data?.recordId) {
-        throw new Error("未获取到任务ID")
+        throw new Error(`未获取到任务ID。API返回: ${JSON.stringify(result)}`)
       }
 
       const taskId = result.data.taskId || result.data.recordId
@@ -311,7 +325,7 @@ export function ImageGenerator() {
                     <Zap className="w-4 h-4 text-accent" />
                     {t("gen.model")}
                   </Label>
-                  <Select defaultValue="nano-banana-pro">
+                  <Select value={t2iModel} onValueChange={setT2iModel}>
                     <SelectTrigger className="border-accent/20 focus:border-accent">
                       <SelectValue />
                     </SelectTrigger>
@@ -323,8 +337,6 @@ export function ImageGenerator() {
                         </div>
                       </SelectItem>
                       <SelectItem value="nano-banana">Nano Banana</SelectItem>
-                      <SelectItem value="stable-diffusion-xl">Stable Diffusion XL</SelectItem>
-                      <SelectItem value="midjourney-v6">Midjourney V6</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -546,7 +558,7 @@ export function ImageGenerator() {
                     <Zap className="w-4 h-4 text-accent" />
                     {t("gen.model")}
                   </Label>
-                  <Select defaultValue="nano-banana-pro">
+                  <Select value={i2iModel} onValueChange={setI2iModel}>
                     <SelectTrigger className="border-accent/20 focus:border-accent">
                       <SelectValue />
                     </SelectTrigger>

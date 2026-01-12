@@ -1,10 +1,57 @@
 import { NextRequest, NextResponse } from "next/server"
+import { createClient } from "@supabase/supabase-js"
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function POST(request: NextRequest) {
+  console.log("========== 生图API被调用 ==========")
   try {
-    const { prompt, imageUrls, aspectRatio, resolution } = await request.json()
+    const { prompt, imageUrls, aspectRatio, resolution, userId, model = "nano-banana-pro" } = await request.json()
+    console.log("收到的参数:", { prompt, imageUrls, aspectRatio, resolution, userId, model })
 
-    console.log("Generating with:", { prompt, imageUrls, aspectRatio, resolution })
+    if (!userId) {
+      console.log("错误: 未登录")
+      return NextResponse.json({ error: "未登录" }, { status: 401 })
+    }
+
+    // 根据模型和分辨率计算积分消耗
+    let creditCost = 3
+    if (model === "nano-banana-pro") {
+      creditCost = resolution === "4K" ? 12 : 6
+    }
+
+    const { data: userCredits } = await supabase
+      .from("user_credits")
+      .select("credits")
+      .eq("user_id", userId)
+      .single()
+
+    if (!userCredits || userCredits.credits < creditCost) {
+      return NextResponse.json({ error: "积分不足" }, { status: 400 })
+    }
+
+    // 扣除积分
+    await supabase
+      .from("user_credits")
+      .update({ credits: userCredits.credits - creditCost })
+      .eq("user_id", userId)
+
+    console.log("Generating with:", { prompt, imageUrls, aspectRatio, resolution, model })
+
+    const requestBody = {
+      model: model,
+      input: {
+        prompt,
+        image_input: imageUrls,
+        aspect_ratio: aspectRatio,
+        resolution: resolution,
+        output_format: "png",
+      },
+    }
+    console.log("Request body:", JSON.stringify(requestBody, null, 2))
 
     const response = await fetch("https://api.kie.ai/api/v1/jobs/createTask", {
       method: "POST",
@@ -12,20 +59,27 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${process.env.KIE_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        model: "nano-banana-pro",
-        input: {
-          prompt,
-          image_input: imageUrls,
-          aspect_ratio: aspectRatio,
-          resolution: resolution,
-          output_format: "png",
-        },
-      }),
+      body: JSON.stringify(requestBody),
     })
 
     const data = await response.json()
-    console.log("KIE AI response:", data)
+    console.log("KIE AI response:", JSON.stringify(data, null, 2))
+
+    if (!response.ok) {
+      console.error("API error:", data)
+      return NextResponse.json({ error: data.message || "API调用失败" }, { status: response.status })
+    }
+
+    // 检查 KIEAI 返回的数据格式
+    if (data.code !== 200 || !data.data?.taskId) {
+      console.error("KIEAI API 返回格式错误:", data)
+      return NextResponse.json({
+        error: data.message || "KIEAI API 返回格式错误",
+        details: data
+      }, { status: 500 })
+    }
+
+    console.log("成功获取 taskId:", data.data.taskId)
     return NextResponse.json(data)
   } catch (error) {
     console.error("Generation error:", error)

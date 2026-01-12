@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -10,13 +10,17 @@ export default function CreditBalance() {
   const { t } = useLanguage()
   const [credits, setCredits] = useState(0)
   const [user, setUser] = useState<any>(null)
+  const checkinAttempted = useRef(false)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       if (session?.user) {
         fetchCredits(session.user.id)
-        performDailyCheckin(session.user.id)
+        if (!checkinAttempted.current) {
+          checkinAttempted.current = true
+          performDailyCheckin(session.user.id)
+        }
       }
     })
 
@@ -24,7 +28,6 @@ export default function CreditBalance() {
       setUser(session?.user ?? null)
       if (session?.user) {
         fetchCredits(session.user.id)
-        performDailyCheckin(session.user.id)
       }
     })
 
