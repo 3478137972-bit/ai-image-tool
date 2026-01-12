@@ -9,7 +9,6 @@ import { supabase } from "@/lib/supabase"
 export default function PricingPage() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState<string | null>(null)
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -57,62 +56,58 @@ export default function PricingPage() {
       name: "BASIC",
       nameZh: "基础版",
       subtitle: "适合初次探索 AI 创作",
-      price: billingCycle === 'monthly' ? 9 : 15,
-      originalPrice: 15,
-      monthlyCredits: 1500,
-      extraCredits: "$1=100",
+      price: 29,
+      originalPrice: 39,
+      monthlyCredits: 352,
+      extraCredits: "¥0.0825/积分",
       features: [
         "每月积分",
         "额外充值",
-        "750张图像",
-        "250+视频",
+        "约58-117张图像",
       ],
       planId: "Basic",
     },
     {
       name: "PRO",
-      nameZh: "专业版",
+      nameZh: "标准版",
       subtitle: "适合高频创作与持续产出",
-      price: billingCycle === 'monthly' ? 30 : 35,
-      originalPrice: 35,
-      monthlyCredits: 3500,
-      extraCredits: "$1=107",
+      price: 49,
+      originalPrice: 69,
+      monthlyCredits: 681,
+      extraCredits: "¥0.072/积分",
       popular: true,
-      bonus: "+赠送7%",
+      bonus: "7折优惠",
       features: [
         "每月积分",
         "额外充值",
-        "1750张图像",
-        "583个视频",
+        "约113-227张图像",
       ],
       planId: "Standard",
     },
     {
       name: "ULTIMATE",
-      nameZh: "旗舰版",
+      nameZh: "专业版",
       subtitle: "适合大批量稳定产出与交付",
-      price: billingCycle === 'monthly' ? 306 : 360,
-      originalPrice: 360,
-      monthlyCredits: 36000,
-      extraCredits: "$1=115",
-      bonus: "+赠送15%",
+      price: 79,
+      originalPrice: 119,
+      monthlyCredits: 1197,
+      extraCredits: "¥0.066/积分",
+      bonus: "65折优惠",
       features: [
         "每月积分",
         "额外充值",
-        "18000张图像",
-        "6000个视频",
+        "约199-399张图像",
       ],
       planId: "Pro",
     },
   ]
 
   const creditPacks = [
-    { credits: 650, bonus: 50, images: 160, price: 28.00 },
-    { credits: 1450, bonus: 200, images: 362, price: 58.00 },
-    { credits: 2650, bonus: 550, images: 662, price: 98.00 },
-    { credits: 5700, bonus: 1460, images: 1425, price: 198.00 },
-    { credits: 9600, bonus: 3218, images: 2400, price: 298.00 },
-    { credits: 22800, bonus: 10000, images: 5700, price: 598.00 },
+    { credits: 100, bonus: 0, images: "16-33", price: 11.00, discount: "原价" },
+    { credits: 300, bonus: 0, images: "50-100", price: 31.00, discount: "94折" },
+    { credits: 500, bonus: 0, images: "83-166", price: 50.00, discount: "91折" },
+    { credits: 1000, bonus: 0, images: "166-333", price: 95.00, discount: "86折" },
+    { credits: 3000, bonus: 0, images: "500-1000", price: 240.00, discount: "73折" },
   ]
 
   return (
@@ -125,33 +120,6 @@ export default function PricingPage() {
           </div>
           <h1 className="text-5xl font-bold mb-4 text-gray-900">升级您的套餐</h1>
           <p className="text-gray-600 text-lg">选择最适合您的方案，立即开始创作</p>
-        </div>
-
-        {/* 计费周期切换 */}
-        <div className="flex justify-center items-center gap-4 mb-12">
-          <button
-            onClick={() => setBillingCycle('monthly')}
-            className={`px-6 py-2 rounded-full font-medium transition-all ${
-              billingCycle === 'monthly'
-                ? 'bg-white text-gray-900 shadow-md'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            月付
-          </button>
-          <button
-            onClick={() => setBillingCycle('yearly')}
-            className={`px-6 py-2 rounded-full font-medium transition-all relative ${
-              billingCycle === 'yearly'
-                ? 'bg-white text-gray-900 shadow-md'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            年付
-            <span className="absolute -top-2 -right-2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs px-2 py-0.5 rounded-full">
-              30% OFF
-            </span>
-          </button>
         </div>
 
         {/* 会员套餐 */}
@@ -176,12 +144,12 @@ export default function PricingPage() {
                 <p className="text-sm text-gray-600 mb-4">{plan.subtitle}</p>
 
                 <div className="flex items-baseline gap-2 mb-2">
-                  <span className="text-gray-400 line-through text-lg">${plan.originalPrice}</span>
-                  <span className="text-5xl font-bold text-gray-900">${plan.price}</span>
+                  <span className="text-gray-400 line-through text-lg">¥{plan.originalPrice}</span>
+                  <span className="text-5xl font-bold text-gray-900">¥{plan.price}</span>
                   <span className="text-gray-600">/月</span>
                 </div>
                 <p className="text-sm text-gray-500">
-                  按{billingCycle === 'monthly' ? '月' : '年'}计费，次月起 ${plan.originalPrice}/月
+                  首月优惠价，次月起 ¥{plan.originalPrice}/月
                 </p>
               </div>
 
@@ -228,8 +196,8 @@ export default function PricingPage() {
 
         {/* 积分包标题 */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">购买椒图积分</h2>
-          <p className="text-gray-600 text-lg">选择花椒粒套餐，立即开始创作</p>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">购买积分</h2>
+          <p className="text-gray-600 text-lg">选择积分套餐，立即开始创作</p>
         </div>
 
         {/* 积分包 */}
@@ -248,13 +216,13 @@ export default function PricingPage() {
                   <div className="flex-1">
                     <div className="text-4xl font-bold text-white mb-1">{pack.credits}</div>
                     <div className="text-sm text-pink-400 font-medium">
-                      含赠送 {pack.bonus}
+                      {pack.discount}
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                       约可生成 {pack.images} 张图片
                     </div>
                     <div className="text-xs text-gray-500">
-                      *花椒粒长期有效
+                      *积分长期有效
                     </div>
                   </div>
                 </div>
