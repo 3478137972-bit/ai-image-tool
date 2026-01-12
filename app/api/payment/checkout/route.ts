@@ -48,11 +48,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: `Creem API 错误: ${errorMessage}` }, { status: response.status })
     }
 
-    // Creem 可能返回不同的字段名，尝试多个可能的字段
-    const checkoutUrl = data.url || data.checkout_url || data.payment_url || data.link
+    // Creem 返回的字段是 checkout_url
+    const checkoutUrl = data.checkout_url
 
     if (!checkoutUrl) {
-      console.error('No URL in response:', data)
+      console.error('No checkout_url in response:', data)
       return NextResponse.json({
         error: '未收到支付链接',
         debug: data
