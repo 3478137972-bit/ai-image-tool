@@ -7,6 +7,7 @@ import { Sparkles, Menu } from "lucide-react"
 import { useLanguage } from "./language-provider"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { supabase } from "@/lib/supabase"
+import CreditBalance from "./CreditBalance"
 
 export function Header() {
   const { language, setLanguage, t } = useLanguage()
@@ -93,6 +94,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <CreditBalance />
           {user ? (
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground hidden md:inline">{user.email}</span>

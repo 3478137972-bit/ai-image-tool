@@ -237,33 +237,41 @@ export default function PricingPage() {
           {creditPacks.map((pack) => (
             <Card
               key={pack.credits}
-              className="p-6 border border-gray-200 hover:border-blue-200 hover:shadow-xl transition-all"
+              className="relative p-6 bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 hover:border-pink-500 hover:shadow-2xl transition-all overflow-hidden group"
             >
-              <div className="flex items-start gap-3 mb-4">
-                <div className="text-pink-500 text-2xl">⚡</div>
-                <div className="flex-1">
-                  <div className="text-3xl font-bold text-gray-900">{pack.credits}</div>
-                  <div className="text-sm text-gray-500 mt-1">
-                    含赠送 {pack.bonus}
-                  </div>
-                  <div className="text-sm text-gray-500">
-                    约可生成 {pack.images} 张图片 *花椒粒长期有效
+              {/* 背景装饰 */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform" />
+
+              <div className="relative z-10">
+                <div className="flex items-start gap-3 mb-4">
+                  <div className="text-pink-500 text-3xl">⚡</div>
+                  <div className="flex-1">
+                    <div className="text-4xl font-bold text-white mb-1">{pack.credits}</div>
+                    <div className="text-sm text-pink-400 font-medium">
+                      含赠送 {pack.bonus}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      约可生成 {pack.images} 张图片
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      *花椒粒长期有效
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-gray-400">¥</span>
-                <span className="text-4xl font-bold text-gray-900">{pack.price.toFixed(2)}</span>
-              </div>
+                <div className="flex items-baseline gap-2 mb-4 mt-6">
+                  <span className="text-gray-400 text-lg">¥</span>
+                  <span className="text-5xl font-bold text-white">{pack.price.toFixed(2)}</span>
+                </div>
 
-              <Button
-                onClick={() => handleCheckout(`credits-${pack.credits}`, 'payment')}
-                disabled={loading === `credits-${pack.credits}`}
-                className="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-xl font-semibold"
-              >
-                {loading === `credits-${pack.credits}` ? '处理中...' : '立即购买'}
-              </Button>
+                <Button
+                  onClick={() => handleCheckout(`credits-${pack.credits}`, 'payment')}
+                  disabled={loading === `credits-${pack.credits}`}
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg"
+                >
+                  {loading === `credits-${pack.credits}` ? '处理中...' : '立即购买'}
+                </Button>
+              </div>
             </Card>
           ))}
         </div>
