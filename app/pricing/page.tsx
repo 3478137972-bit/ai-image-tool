@@ -6,11 +6,20 @@ import { Card } from "@/components/ui/card"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 import { useLanguage } from "@/components/language-provider"
+import PaymentModal from "@/components/PaymentModal"
 
 export default function PricingPage() {
   const { t } = useLanguage()
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedPlan, setSelectedPlan] = useState<{
+    planId: string
+    type: 'subscription' | 'payment'
+    name: string
+    price: number
+    credits: number
+  } | null>(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -24,30 +33,36 @@ export default function PricingPage() {
     return () => subscription.unsubscribe()
   }, [])
 
-  const handleCheckout = async (planId: string, type: 'subscription' | 'payment') => {
+  const openPaymentModal = (planId: string, type: 'subscription' | 'payment', name: string, price: number, credits: number) => {
     if (!user) {
       alert(t('pricing.loginRequired'))
       return
     }
+    setSelectedPlan({ planId, type, name, price, credits })
+    setModalOpen(true)
+  }
+
+  const handleConfirmPayment = async () => {
+    if (!selectedPlan || !user) return
 
     const userId = user.email || user.id || 'guest'
+    setLoading(selectedPlan.planId)
 
-    setLoading(planId)
     try {
       const res = await fetch('/api/payment/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, planId, userId }),
+        body: JSON.stringify({ type: selectedPlan.type, planId: selectedPlan.planId, userId }),
       })
       const data = await res.json()
 
       if (data.url) {
         window.location.href = data.url
       } else {
-        alert(`${t('pricing.paymentFailed')}: ${data.error || t('pricing.unknownError')}`)
+        alert(`Payment failed: ${data.error || 'Unknown error'}`)
       }
     } catch (error) {
-      alert(`${t('pricing.paymentFailed')}: ${error}`)
+      alert(`Payment failed: ${error}`)
     } finally {
       setLoading(null)
     }
@@ -172,7 +187,7 @@ export default function PricingPage() {
               </div>
 
               <Button
-                onClick={() => handleCheckout(plan.planId, 'subscription')}
+                onClick={() => openPaymentModal(plan.planId, 'subscription', plan.nameZh, plan.price, plan.monthlyCredits)}
                 disabled={loading === plan.planId}
                 className={`w-full py-6 text-lg font-semibold rounded-xl transition-all ${
                   plan.popular
@@ -228,7 +243,7 @@ export default function PricingPage() {
               </div>
 
               <Button
-                onClick={() => handleCheckout(`credits-${pack.credits}`, 'payment')}
+                onClick={() => openPaymentModal(`credits-${pack.credits}`, 'payment', `${pack.credits} Credits`, pack.price, pack.credits)}
                 disabled={loading === `credits-${pack.credits}`}
                 className="w-full bg-gray-900 hover:bg-gray-800 text-white py-6 text-lg font-semibold rounded-xl transition-all"
               >
@@ -238,6 +253,16 @@ export default function PricingPage() {
           ))}
         </div>
       </div>
+
+      <PaymentModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        planName={selectedPlan?.name || ''}
+        price={selectedPlan?.price || 0}
+        credits={selectedPlan?.credits || 0}
+        onConfirm={handleConfirmPayment}
+        loading={loading !== null}
+      />
     </div>
   )
 }
