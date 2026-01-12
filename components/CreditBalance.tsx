@@ -4,8 +4,10 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { useLanguage } from "@/components/language-provider"
 
 export default function CreditBalance() {
+  const { t } = useLanguage()
   const [credits, setCredits] = useState(0)
   const [user, setUser] = useState<any>(null)
 
@@ -65,13 +67,13 @@ export default function CreditBalance() {
       <div className="flex items-center gap-2">
         <span className="text-pink-500 text-xl">⚡</span>
         <div className="text-sm">
-          <div className="text-gray-500 text-xs">花椒粒</div>
+          <div className="text-gray-500 text-xs">{t('credit.balance')}</div>
           <div className="font-bold text-gray-900">{credits}</div>
         </div>
       </div>
       <Link href="/pricing">
         <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-4 py-1 text-sm rounded-full">
-          升级
+          {t('pricing.upgrade')}
         </Button>
       </Link>
     </div>

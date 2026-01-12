@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
+import { useLanguage } from "@/components/language-provider"
 
 export default function PricingPage() {
+  const { t } = useLanguage()
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState<string | null>(null)
 
@@ -24,7 +26,7 @@ export default function PricingPage() {
 
   const handleCheckout = async (planId: string, type: 'subscription' | 'payment') => {
     if (!user) {
-      alert('请先登录')
+      alert(t('pricing.loginRequired'))
       return
     }
 
@@ -42,10 +44,10 @@ export default function PricingPage() {
       if (data.url) {
         window.location.href = data.url
       } else {
-        alert(`支付失败: ${data.error || '未知错误'}`)
+        alert(`${t('pricing.paymentFailed')}: ${data.error || t('pricing.unknownError')}`)
       }
     } catch (error) {
-      alert(`支付失败: ${error}`)
+      alert(`${t('pricing.paymentFailed')}: ${error}`)
     } finally {
       setLoading(null)
     }
@@ -116,10 +118,10 @@ export default function PricingPage() {
         {/* 标题区域 */}
         <div className="text-center mb-12">
           <div className="inline-block bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-600 px-6 py-2 rounded-full text-sm font-semibold mb-6 border border-blue-100">
-            限时优惠
+            {t('pricing.badge')}
           </div>
-          <h1 className="text-5xl font-bold mb-4 text-gray-900">升级您的套餐</h1>
-          <p className="text-gray-600 text-lg">选择最适合您的方案，立即开始创作</p>
+          <h1 className="text-5xl font-bold mb-4 text-gray-900">{t('pricing.title')}</h1>
+          <p className="text-gray-600 text-lg">{t('pricing.subtitle')}</p>
         </div>
 
         {/* 会员套餐 */}
@@ -135,7 +137,7 @@ export default function PricingPage() {
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg">
-                  专业推荐
+                  {t('pricing.recommended')}
                 </div>
               )}
 
@@ -146,20 +148,20 @@ export default function PricingPage() {
                 <div className="flex items-baseline gap-2 mb-2">
                   <span className="text-gray-400 line-through text-lg">¥{plan.originalPrice}</span>
                   <span className="text-5xl font-bold text-gray-900">¥{plan.price}</span>
-                  <span className="text-gray-600">/月</span>
+                  <span className="text-gray-600">{t('pricing.perMonth')}</span>
                 </div>
                 <p className="text-sm text-gray-500">
-                  首月优惠价，次月起 ¥{plan.originalPrice}/月
+                  {t('pricing.firstMonth')} ¥{plan.originalPrice}{t('pricing.perMonth')}
                 </p>
               </div>
 
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-700">每月积分</span>
+                  <span className="text-gray-700">{t('pricing.monthlyCredits')}</span>
                   <span className="font-bold text-gray-900">{plan.monthlyCredits.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                  <span className="text-gray-700">额外充值</span>
+                  <span className="text-gray-700">{t('pricing.extraCredits')}</span>
                   <span className="font-bold text-gray-900">{plan.extraCredits}</span>
                 </div>
                 {plan.bonus && (
@@ -178,11 +180,11 @@ export default function PricingPage() {
                     : 'bg-gray-900 hover:bg-gray-800 text-white'
                 }`}
               >
-                {loading === plan.planId ? '处理中...' : '升级'}
+                {loading === plan.planId ? t('pricing.processing') : t('pricing.upgrade')}
               </Button>
 
               <div className="mt-6 space-y-2">
-                <p className="text-sm font-semibold text-gray-700 mb-3">最多约</p>
+                <p className="text-sm font-semibold text-gray-700 mb-3">{t('pricing.mostValue')}</p>
                 {plan.features.map((feature, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <Check className="h-4 w-4 text-blue-500" />
@@ -196,8 +198,8 @@ export default function PricingPage() {
 
         {/* 积分包标题 */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">购买积分</h2>
-          <p className="text-gray-600 text-lg">选择积分套餐，立即开始创作</p>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">{t('pricing.buyCredits')}</h2>
+          <p className="text-gray-600 text-lg">{t('pricing.buyCreditsSubtitle')}</p>
         </div>
 
         {/* 积分包 */}
@@ -205,41 +207,33 @@ export default function PricingPage() {
           {creditPacks.map((pack) => (
             <Card
               key={pack.credits}
-              className="relative p-6 bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 hover:border-pink-500 hover:shadow-2xl transition-all overflow-hidden group"
+              className="relative p-8 border border-gray-200 hover:border-blue-200 hover:shadow-2xl transition-all"
             >
-              {/* 背景装饰 */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full blur-3xl group-hover:scale-150 transition-transform" />
+              <div className="mb-6">
+                <h3 className="text-2xl font-bold text-blue-600 mb-1">{pack.credits} {t('pricing.credits')}</h3>
+                <p className="text-sm text-gray-600 mb-4">{t('pricing.about')}{pack.images} {t('pricing.images')}</p>
 
-              <div className="relative z-10">
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="text-pink-500 text-3xl">⚡</div>
-                  <div className="flex-1">
-                    <div className="text-4xl font-bold text-white mb-1">{pack.credits}</div>
-                    <div className="text-sm text-pink-400 font-medium">
-                      {pack.discount}
-                    </div>
-                    <div className="text-xs text-gray-400 mt-1">
-                      约可生成 {pack.images} 张图片
-                    </div>
-                    <div className="text-xs text-gray-500">
-                      *积分长期有效
-                    </div>
-                  </div>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <span className="text-5xl font-bold text-gray-900">¥{pack.price.toFixed(2)}</span>
                 </div>
-
-                <div className="flex items-baseline gap-2 mb-4 mt-6">
-                  <span className="text-gray-400 text-lg">¥</span>
-                  <span className="text-5xl font-bold text-white">{pack.price.toFixed(2)}</span>
-                </div>
-
-                <Button
-                  onClick={() => handleCheckout(`credits-${pack.credits}`, 'payment')}
-                  disabled={loading === `credits-${pack.credits}`}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white py-3 rounded-xl font-semibold shadow-lg"
-                >
-                  {loading === `credits-${pack.credits}` ? '处理中...' : '立即购买'}
-                </Button>
+                <p className="text-sm text-gray-500">{t('pricing.creditsValid')}</p>
               </div>
+
+              <div className="space-y-3 mb-6">
+                {pack.discount !== "原价" && (
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 px-3 py-2 rounded-lg">
+                    <span className="text-blue-600 font-semibold text-sm">{pack.discount}</span>
+                  </div>
+                )}
+              </div>
+
+              <Button
+                onClick={() => handleCheckout(`credits-${pack.credits}`, 'payment')}
+                disabled={loading === `credits-${pack.credits}`}
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white py-6 text-lg font-semibold rounded-xl transition-all"
+              >
+                {loading === `credits-${pack.credits}` ? t('pricing.processing') : t('pricing.buyNow')}
+              </Button>
             </Card>
           ))}
         </div>
