@@ -34,7 +34,6 @@ export async function POST(req: NextRequest) {
           email: userId,
         },
         success_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/payment/success`,
-        cancel_url: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/pricing`,
       }),
     })
 
