@@ -1,12 +1,13 @@
 "use client"
 
-import { Check } from "lucide-react"
+import { Check, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useState, useEffect } from "react"
 import { supabase } from "@/lib/supabase"
 import { useLanguage } from "@/components/language-provider"
 import PaymentModal from "@/components/PaymentModal"
+import Link from "next/link"
 
 export default function PricingPage() {
   const { t } = useLanguage()
@@ -130,6 +131,12 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-20">
       <div className="container mx-auto px-4 max-w-7xl">
+        {/* 返回按钮 */}
+        <Link href="/" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-8 group">
+          <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-medium">Back to Home</span>
+        </Link>
+
         {/* 标题区域 */}
         <div className="text-center mb-12">
           <div className="inline-block bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-600 px-6 py-2 rounded-full text-sm font-semibold mb-6 border border-blue-100">
