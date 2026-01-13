@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Sparkles, TrendingUp, Eye } from "lucide-react"
+import { Sparkles, TrendingUp } from "lucide-react"
 import { useLanguage } from "./language-provider"
 
 export function ShowcaseSection() {
@@ -12,26 +12,18 @@ export function ShowcaseSection() {
     {
       image: "/ai-generated-fantasy-landscape.jpg",
       prompt: "Fantasy landscape with magical castle",
-      views: "12.5K",
-      likes: "2.3K",
     },
     {
       image: "/ai-generated-portrait-art.jpg",
       prompt: "Professional portrait photography",
-      views: "18.2K",
-      likes: "3.1K",
     },
     {
       image: "/ai-generated-product-design.jpg",
       prompt: "Modern product design concept",
-      views: "9.8K",
-      likes: "1.9K",
     },
     {
       image: "/ai-generated-architecture.jpg",
       prompt: "Futuristic architecture design",
-      views: "15.4K",
-      likes: "2.7K",
     },
   ]
 
@@ -78,22 +70,7 @@ export function ShowcaseSection() {
                   </div>
                 </div>
                 <div className="p-4 bg-gradient-to-br from-card to-muted/20">
-                  <p className="text-sm font-medium mb-3 line-clamp-1">{item.prompt}</p>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    <div className="flex items-center gap-3">
-                      <span className="flex items-center gap-1">
-                        <Eye className="w-3.5 h-3.5" />
-                        {item.views}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Sparkles className="w-3.5 h-3.5 text-accent" />
-                        {item.likes}
-                      </span>
-                    </div>
-                    <Badge variant="secondary" className="text-[10px] px-2 py-0">
-                      Featured
-                    </Badge>
-                  </div>
+                  <p className="text-sm font-medium line-clamp-1">{item.prompt}</p>
                 </div>
               </CardContent>
             </Card>
