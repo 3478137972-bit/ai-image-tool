@@ -15,7 +15,7 @@ const PRODUCT_IDS = {
   'Basic': 'prod_5zY6k18pp32ry5DSfSfsfT',
   'Standard': 'prod_4iRgcEm39caf3jvubd8bR6',
   'Pro': 'prod_7O1Puz3IAf4tK0A6GlLtJg',
-  'credits-100': 'prod_7crRfuLb0zchETDvLdCaWp',
+  'credits-100': 'prod_7aS4RjY0sOkat5mpF6MlE2',
   'credits-300': 'prod_6t2EwoXzQhgLJdDpED3VBS',
   'credits-500': 'prod_1fIoubCxCQro1F7sdFraZI',
   'credits-1000': 'prod_6V3Tv6i778fCiyhHqFQZlM',
