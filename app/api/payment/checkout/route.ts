@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const PLANS = {
-  'Basic': { price: 420, credits: 380, name: '一级会员' },
-  'Standard': { price: 710, credits: 681, name: '二级会员' },
-  'Pro': { price: 1140, credits: 1197, name: '三级会员' },
-  'credits-100': { price: 160, credits: 100, name: '100积分' },
-  'credits-300': { price: 450, credits: 300, name: '300积分' },
-  'credits-500': { price: 720, credits: 500, name: '500积分' },
-  'credits-1000': { price: 1370, credits: 1000, name: '1000积分' },
-  'credits-3000': { price: 3460, credits: 3000, name: '3000积分' },
+  'Basic': { price: 499, credits: 352, name: 'BASIC会员' },
+  'Standard': { price: 699, credits: 681, name: 'PRO会员' },
+  'Pro': { price: 1099, credits: 1197, name: 'ULTIMATE会员' },
+  'credits-100': { price: 199, credits: 100, name: '100积分' },
+  'credits-300': { price: 499, credits: 300, name: '300积分' },
+  'credits-500': { price: 699, credits: 500, name: '500积分' },
+  'credits-1000': { price: 1399, credits: 1000, name: '1000积分' },
+  'credits-3000': { price: 3399, credits: 3000, name: '3000积分' },
 }
 
 const PRODUCT_IDS = {

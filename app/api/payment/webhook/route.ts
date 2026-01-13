@@ -7,7 +7,7 @@ const supabase = createClient(
 )
 
 const PLANS = {
-  'Basic': { credits: 380 },
+  'Basic': { credits: 352 },
   'Standard': { credits: 681 },
   'Pro': { credits: 1197 },
   'credits-100': { credits: 100 },
