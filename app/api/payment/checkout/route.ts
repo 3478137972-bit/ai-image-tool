@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const PLANS = {
-  'Basic': { price: 499, credits: 352, name: 'Basic Plan' },
+  'Basic': { price: 399, credits: 352, name: 'Basic Plan' },
   'Standard': { price: 699, credits: 681, name: 'Standard Plan' },
   'Pro': { price: 1099, credits: 1197, name: 'Pro Plan' },
-  'credits-100': { price: 199, credits: 100, name: '100 Credits' },
-  'credits-300': { price: 499, credits: 300, name: '300 Credits' },
+  'credits-100': { price: 149, credits: 100, name: '100 Credits' },
+  'credits-300': { price: 429, credits: 300, name: '300 Credits' },
   'credits-500': { price: 699, credits: 500, name: '500 Credits' },
-  'credits-1000': { price: 1399, credits: 1000, name: '1000 Credits' },
-  'credits-3000': { price: 3399, credits: 3000, name: '3000 Credits' },
+  'credits-1000': { price: 1299, credits: 1000, name: '1000 Credits' },
+  'credits-3000': { price: 3299, credits: 3000, name: '3000 Credits' },
 }
 
 const PRODUCT_IDS = {

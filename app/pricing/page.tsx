@@ -74,10 +74,10 @@ export default function PricingPage() {
       name: "BASIC",
       nameZh: "基础版",
       subtitle: "适合初次探索 AI 创作",
-      price: 4.99,
+      price: 3.99,
       originalPrice: 5.99,
       monthlyCredits: 352,
-      extraCredits: "$0.012/积分",
+      extraCredits: "$0.011/积分",
       features: [
         "每月积分",
         "额外充值",
@@ -121,11 +121,11 @@ export default function PricingPage() {
   ]
 
   const creditPacks = [
-    { credits: 100, bonus: 0, images: "16-33", price: 1.99, discount: "原价" },
-    { credits: 300, bonus: 0, images: "50-100", price: 4.99, discount: "94折" },
+    { credits: 100, bonus: 0, images: "16-33", price: 1.49, discount: "原价" },
+    { credits: 300, bonus: 0, images: "50-100", price: 4.29, discount: "94折" },
     { credits: 500, bonus: 0, images: "83-166", price: 6.99, discount: "91折" },
-    { credits: 1000, bonus: 0, images: "166-333", price: 13.99, discount: "86折" },
-    { credits: 3000, bonus: 0, images: "500-1000", price: 33.99, discount: "73折" },
+    { credits: 1000, bonus: 0, images: "166-333", price: 12.99, discount: "86折" },
+    { credits: 3000, bonus: 0, images: "500-1000", price: 32.99, discount: "73折" },
   ]
 
   return (
