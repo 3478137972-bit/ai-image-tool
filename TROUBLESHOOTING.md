@@ -119,6 +119,108 @@ WHERE user_id = (
 
 ---
 
+## 2026-01-14: KIEAI API 模型名称不支持错误
+
+### 问题描述
+使用 nano-banana 模型生成图片时，KIEAI API 返回错误：
+```
+"code": 422
+"msg": "The model name you specified is not supported. Please verify your input and use one of the supported models provided by KIE."
+"data": null
+```
+
+### 问题排查过程
+
+1. **检查 API 请求日志**
+   - ✅ 请求成功发送到 KIEAI API
+   - ❌ 返回 422 错误，提示模型名称不支持
+
+2. **分析请求数据**
+   ```json
+   {
+     "model": "nano-banana",
+     "input": {
+       "prompt": "...",
+       "image_size": "1:1",
+       "output_format": "png"
+     }
+   }
+   ```
+
+3. **对比 KIEAI 官方文档**
+   - 官方文档要求的模型名称：`google/nano-banana`
+   - 代码中使用的模型名称：`nano-banana`
+   - ❌ 缺少 `google/` 前缀
+
+### 根本原因
+
+**模型名称缺少命名空间前缀**
+
+KIEAI API 要求使用完整的模型名称，包含命名空间前缀：
+- ❌ 错误：`nano-banana`
+- ✅ 正确：`google/nano-banana`
+- ❌ 错误：`nano-banana-edit`
+- ✅ 正确：`google/nano-banana-edit`
+
+### 解决方案
+
+**1. 修改 UI 组件模型选择值**
+
+`components/image-generator.tsx`:
+```typescript
+// 文生图模型选择
+<SelectItem value="google/nano-banana">Nano Banana</SelectItem>
+
+// 图生图模型选择
+<SelectItem value="google/nano-banana-edit">Nano Banana Edit</SelectItem>
+```
+
+**2. 修改 API 路由模型判断逻辑**
+
+`app/api/generate/route.ts`:
+```typescript
+// 积分计算
+if (model === "google/nano-banana" || model === "google/nano-banana-edit") {
+  creditCost = 1
+}
+
+// 请求体构建
+const isNanoBanana = model === "google/nano-banana" || model === "google/nano-banana-edit"
+```
+
+**3. 修改 UI 条件判断**
+
+```typescript
+// 文生图
+{t2iModel === "google/nano-banana" ? "Image Size" : t("gen.aspectRatio")}
+
+// 图生图
+{i2iModel === "google/nano-banana-edit" ? "Image Size" : t("gen.aspectRatio")}
+```
+
+### 验证方法
+
+1. 部署修复后的代码
+2. 选择 Nano Banana 模型进行文生图测试
+3. 选择 Nano Banana Edit 模型进行图生图测试
+4. 检查是否成功生成图片
+
+### 预防措施
+
+1. **参考官方文档**：集成第三方 API 时，严格按照官方文档的模型命名规范
+2. **测试覆盖**：新增模型时，先在测试环境验证模型名称是否正确
+3. **错误处理**：在前端显示更详细的 API 错误信息，方便快速定位问题
+
+### 相关文件
+- `components/image-generator.tsx` - UI 组件模型选择
+- `app/api/generate/route.ts` - API 路由模型处理逻辑
+
+### 提交记录
+- Commit: `b740f8f` - 添加 nano-banana 和 nano-banana-edit 模型支持
+- Commit: `9e69b03` - 修复 nano-banana 模型名称，添加 google/ 前缀
+
+---
+
 ## 常见问题快速检查清单
 
 ### 支付后积分未到账
