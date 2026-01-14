@@ -22,7 +22,12 @@
       "Bash(npm install:*)",
       "Bash(git config:*)",
       "Bash(dir:*)",
-      "Bash(openssl rand:*)"
+      "Bash(openssl rand:*)",
+      "Bash(ls:*)",
+      "Bash(timeout:*)",
+      "Bash(npx kill-port:*)",
+      "Bash(nginx -v:*)",
+      "Bash(git --version:*)"
     ]
   }
 }
