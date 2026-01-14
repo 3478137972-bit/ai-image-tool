@@ -44,9 +44,9 @@ export async function POST(req: NextRequest) {
     console.log('Webhook event received:', event.type)
     console.log('Event data:', JSON.stringify(event, null, 2))
 
-    if (event.type === 'checkout.completed') {
-      const productId = event.data.product_id
-      const customerEmail = event.data.customer?.email
+    if (event.eventType === 'checkout.completed') {
+      const productId = event.object?.order?.product
+      const customerEmail = event.object?.customer?.email
 
       if (!customerEmail) {
         console.error('No customer email in webhook')
