@@ -17,6 +17,15 @@ export async function POST(request: NextRequest) {
       body: uploadFormData,
     })
 
+    if (!uploadResponse.ok) {
+      const text = await uploadResponse.text()
+      console.error("Upload API error:", { status: uploadResponse.status, body: text })
+      return NextResponse.json({
+        error: `上传失败 (${uploadResponse.status})`,
+        details: text.substring(0, 200)
+      }, { status: uploadResponse.status })
+    }
+
     const data = await uploadResponse.json()
     console.log("KIE AI upload response:", data)
 
