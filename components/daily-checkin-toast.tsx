@@ -9,32 +9,58 @@ export function DailyCheckinToast() {
   const [credits, setCredits] = useState(0)
 
   useEffect(() => {
-    checkAndShowDailyReward()
+    const timer = setTimeout(() => {
+      checkAndShowDailyReward()
+    }, 1000)
+    return () => clearTimeout(timer)
   }, [])
 
   const checkAndShowDailyReward = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session?.user) return
+    try {
+      console.log('Starting daily checkin check...')
+      const { data: { session } } = await supabase.auth.getSession()
 
-    const today = new Date().toISOString().split('T')[0]
-    const lastCheckin = localStorage.getItem('lastCheckin')
+      if (!session?.user) {
+        console.log('No user session found')
+        return
+      }
 
-    if (lastCheckin !== today) {
-      const rewardCredits = 10
-      setCredits(rewardCredits)
-      setShow(true)
-      localStorage.setItem('lastCheckin', today)
+      console.log('User session found:', session.user.id)
 
-      // 给用户添加积分
-      const { error } = await supabase.rpc('add_credits', {
-        user_id: session.user.id,
-        amount: rewardCredits
-      })
+      const today = new Date().toISOString().split('T')[0]
+      const lastCheckin = localStorage.getItem('lastCheckin')
 
-      if (error) console.error('Failed to add daily credits:', error)
+      console.log('Daily checkin check:', { today, lastCheckin, userId: session.user.id })
 
-      // 5秒后自动关闭
-      setTimeout(() => setShow(false), 5000)
+      if (lastCheckin !== today) {
+        console.log('Showing daily reward popup...')
+        const rewardCredits = 10
+
+        // 先显示弹窗
+        setCredits(rewardCredits)
+        setShow(true)
+
+        // 给用户添加积分
+        const { error } = await supabase.rpc('add_credits', {
+          user_id: session.user.id,
+          amount: rewardCredits
+        })
+
+        if (error) {
+          console.error('Failed to add daily credits:', error)
+        } else {
+          console.log('Daily credits added successfully')
+          // 只有成功后才记录签到
+          localStorage.setItem('lastCheckin', today)
+        }
+
+        // 5秒后自动关闭
+        setTimeout(() => setShow(false), 5000)
+      } else {
+        console.log('Already checked in today')
+      }
+    } catch (error) {
+      console.error('Error in daily checkin:', error)
     }
   }
 
