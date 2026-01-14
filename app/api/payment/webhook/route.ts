@@ -45,12 +45,25 @@ export async function POST(req: NextRequest) {
     console.log('Event data:', JSON.stringify(event, null, 2))
 
     if (event.eventType === 'checkout.completed') {
+      const orderId = event.object?.order?.id
       const productId = event.object?.order?.product
       const customerEmail = event.object?.customer?.email
 
-      if (!customerEmail) {
-        console.error('No customer email in webhook')
-        return NextResponse.json({ error: 'No customer email' }, { status: 400 })
+      if (!orderId || !customerEmail) {
+        console.error('Missing order ID or customer email')
+        return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
+      }
+
+      // 检查订单是否已处理
+      const { data: existingOrder } = await supabase
+        .from('payment_records')
+        .select('id')
+        .eq('order_id', orderId)
+        .single()
+
+      if (existingOrder) {
+        console.log(`Order ${orderId} already processed, skipping`)
+        return NextResponse.json({ success: true, message: 'Already processed' })
       }
 
       const planKey = PRODUCT_ID_MAP[productId]
@@ -90,6 +103,16 @@ export async function POST(req: NextRequest) {
         console.error('Failed to update credits:', error)
         return NextResponse.json({ error: 'Failed to update credits' }, { status: 500 })
       }
+
+      // 记录订单
+      await supabase
+        .from('payment_records')
+        .insert({
+          order_id: orderId,
+          user_id: targetUser.id,
+          credits: creditsToAdd,
+          created_at: new Date().toISOString(),
+        })
 
       console.log(`Successfully added ${creditsToAdd} credits to user ${customerEmail}`)
       return NextResponse.json({ success: true })
