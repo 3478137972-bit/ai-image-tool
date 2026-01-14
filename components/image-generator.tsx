@@ -83,6 +83,37 @@ export function ImageGenerator() {
     setSelectedFiles(selectedFiles.filter((_, i) => i !== index))
   }
 
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const img = new Image()
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          let width = img.width
+          let height = img.height
+          const maxSize = 1920
+          if (width > height && width > maxSize) {
+            height = (height * maxSize) / width
+            width = maxSize
+          } else if (height > maxSize) {
+            width = (width * maxSize) / height
+            height = maxSize
+          }
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')!
+          ctx.drawImage(img, 0, 0, width, height)
+          canvas.toBlob((blob) => {
+            resolve(new File([blob!], file.name, { type: 'image/jpeg' }))
+          }, 'image/jpeg', 0.85)
+        }
+        img.src = e.target?.result as string
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
   const handleGenerate = async () => {
     if (!user) {
       handleLoginRequired()
@@ -106,8 +137,9 @@ export function ImageGenerator() {
     try {
       const imageUrls = []
       for (let i = 0; i < selectedFiles.length; i++) {
+        const compressedFile = await compressImage(selectedFiles[i])
         const formData = new FormData()
-        formData.append("file", selectedFiles[i])
+        formData.append("file", compressedFile)
         const uploadRes = await fetch("/api/upload", {
           method: "POST",
           body: formData,
