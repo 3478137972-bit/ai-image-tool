@@ -221,6 +221,142 @@ const isNanoBanana = model === "google/nano-banana" || model === "google/nano-ba
 
 ---
 
+## 2026-01-14: Vercel 构建失败 - 缺少 SUPABASE_SERVICE_ROLE_KEY
+
+### 问题描述
+Vercel 部署时构建失败，错误信息：
+```
+Error: supabaseKey is required.
+at new rA (.next/server/chunks/1dff6_next_dist_esm_build_templates_app-route_d8fd2b7b.js:37:43279)
+Error: Failed to collect page data for /api/checkin
+```
+
+### 问题排查过程
+
+1. **检查构建日志**
+   - ❌ 构建在收集页面数据时失败
+   - ❌ 错误发生在 `/app/api/checkin/route.ts` 文件
+   - ❌ 提示 `supabaseKey is required`
+
+2. **分析代码**
+   ```typescript
+   // app/api/checkin/route.ts
+   const supabase = createClient(
+     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+     process.env.SUPABASE_SERVICE_ROLE_KEY!  // ❌ 环境变量未配置
+   )
+   ```
+
+3. **检查环境变量配置**
+   - ✅ 本地 `.env.local` 文件已配置
+   - ❌ Vercel 环境变量中缺少 `SUPABASE_SERVICE_ROLE_KEY`
+
+### 根本原因
+
+**Vercel 环境变量未配置 SUPABASE_SERVICE_ROLE_KEY**
+
+积分系统和每日签到功能需要使用 Supabase Service Role Key 来绕过 RLS（Row Level Security）策略，直接操作数据库。但该环境变量只在本地配置，未同步到 Vercel 生产环境。
+
+### 解决方案
+
+**1. 获取 Supabase Service Role Key**
+
+1. 访问 https://supabase.com
+2. 选择项目 `lelestext`
+3. 点击左侧 **Project Settings**（齿轮图标）
+4. 点击 **API** 选项卡
+5. 在 **Project API keys** 部分，复制 **service_role** 密钥（标记为 secret）
+
+**2. 在 Vercel 中添加环境变量**
+
+1. 访问 https://vercel.com/dashboard
+2. 选择项目
+3. 点击 **Settings** → **Environment Variables**
+4. 点击 **Add New**
+5. 填写：
+   - **Name**: `SUPABASE_SERVICE_ROLE_KEY`
+   - **Value**: 粘贴从 Supabase 复制的 service_role 密钥
+   - **Environment**: 选择所有环境（Production, Preview, Development）
+6. 点击 **Save**
+
+**3. 重新部署**
+
+添加环境变量后，Vercel 会自动触发重新部署。如果没有，手动触发：
+- 在 Vercel 项目页面，点击 **Deployments** 标签
+- 找到最新的失败部署
+- 点击右侧的 **...** → **Redeploy**
+
+### 验证方法
+
+1. 等待 Vercel 重新部署完成
+2. 访问网站并登录
+3. 检查右上角是否显示积分余额
+4. 刷新页面，查看是否自动签到并获得积分
+5. 在 Supabase SQL Editor 中查询签到记录：
+   ```sql
+   SELECT * FROM checkins ORDER BY created_at DESC LIMIT 10;
+   SELECT * FROM user_credits ORDER BY updated_at DESC LIMIT 10;
+   ```
+
+### 相关配置
+
+**本地环境变量 (`.env.local`)**
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://rxvfwibmlfcfhevtcldg.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Vercel 环境变量清单**
+- ✅ `NEXT_PUBLIC_SUPABASE_URL`
+- ✅ `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- ✅ `SUPABASE_SERVICE_ROLE_KEY` ⚠️ 必须配置
+- ✅ `CREEM_API_KEY`
+- ✅ `CREEM_WEBHOOK_SECRET`
+- ✅ `NEXTAUTH_URL`
+- ✅ `NEXTAUTH_SECRET`
+- ✅ `GOOGLE_CLIENT_ID`
+- ✅ `GOOGLE_CLIENT_SECRET`
+
+### 安全注意事项
+
+⚠️ **Service Role Key 安全警告**
+
+- Service Role Key 拥有完全的数据库访问权限，绕过所有 RLS 策略
+- **绝对不能**暴露在客户端代码中
+- 只能在服务端 API 路由中使用（`app/api/**/route.ts`）
+- 不要提交到 Git 仓库（已在 `.gitignore` 中排除 `.env.local`）
+- 如果泄露，立即在 Supabase 控制台重新生成
+
+### 预防措施
+
+1. **环境变量同步检查清单**
+   - [ ] 本地 `.env.local` 配置完成
+   - [ ] Vercel 环境变量配置完成
+   - [ ] 测试环境验证通过
+   - [ ] 生产环境部署成功
+
+2. **部署前检查**
+   - 新增环境变量时，同时更新本地和 Vercel 配置
+   - 在 Vercel 部署日志中检查是否有环境变量相关错误
+   - 使用 Vercel CLI 本地测试：`vercel env pull`
+
+3. **文档维护**
+   - 在 `README.md` 或 `SETUP_GUIDE.md` 中记录所有必需的环境变量
+   - 提供环境变量配置模板文件（`.env.example`）
+
+### 相关文件
+- `app/api/checkin/route.ts` - 每日签到 API
+- `components/CreditBalance.tsx` - 积分余额显示组件
+- `.env.local` - 本地环境变量配置
+- `.env.example` - 环境变量配置模板（建议创建）
+
+### 提交记录
+- Commit: `8a837c4` - 添加积分余额显示和每日签到功能
+- Commit: `0165c34` - 更新定价策略为最终优化版方案
+
+---
+
 ## 常见问题快速检查清单
 
 ### 支付后积分未到账
