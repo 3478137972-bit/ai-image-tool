@@ -77,13 +77,17 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify(requestBody),
     })
 
+    if (!response.ok) {
+      const text = await response.text()
+      console.error("API error:", { status: response.status, body: text })
+      return NextResponse.json({
+        error: `API调用失败 (${response.status})`,
+        details: text.substring(0, 200)
+      }, { status: response.status })
+    }
+
     const data = await response.json()
     console.log("KIE AI response:", JSON.stringify(data, null, 2))
-
-    if (!response.ok) {
-      console.error("API error:", data)
-      return NextResponse.json({ error: data.message || "API调用失败" }, { status: response.status })
-    }
 
     // 检查 KIEAI 返回的数据格式
     if (data.code !== 200 || !data.data?.taskId) {
