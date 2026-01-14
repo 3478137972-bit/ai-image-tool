@@ -11,6 +11,15 @@ export async function POST(request: NextRequest) {
       },
     })
 
+    if (!response.ok) {
+      const text = await response.text()
+      console.error("Query API error:", { status: response.status, body: text })
+      return NextResponse.json({
+        error: `查询失败 (${response.status})`,
+        details: text.substring(0, 200)
+      }, { status: response.status })
+    }
+
     const data = await response.json()
     console.log("Query response for taskId:", taskId, "data:", JSON.stringify(data, null, 2))
     return NextResponse.json(data)
